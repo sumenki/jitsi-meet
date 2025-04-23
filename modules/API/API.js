@@ -873,6 +873,10 @@ function initCommands() {
             APP.store.dispatch(toggleDialog(SettingsDialog, {
                 defaultTab: SETTINGS_TABS.VIRTUAL_BACKGROUND }));
         },
+        'toggle-settings': () => {
+            APP.store.dispatch(toggleDialog(SettingsDialog, {
+                defaultTab: SETTINGS_TABS.AUDIO }));
+        },
         'end-conference': () => {
             APP.store.dispatch(endConference());
             const state = APP.store.getState();

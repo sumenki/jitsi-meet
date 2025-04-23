@@ -146,7 +146,7 @@ class Watermarks extends Component<IProps, State> {
     }
 
     /**
-     * Renders a Jitsi watermark if it is enabled.
+     * Renders a Jitsi watermark if it is enabled. This has been modified by Sumenki.
      *
      * @private
      * @returns {ReactElement|null}
@@ -165,7 +165,9 @@ class Watermarks extends Component<IProps, State> {
         if (_showJitsiWatermark) {
             const style = {
                 backgroundImage: `url(${_logoUrl})`,
-                position: _logoLink ? 'static' : 'absolute'
+                position: _logoLink ? 'static' : 'absolute',
+                height: '32px',
+                width: '90px'
             } as const;
 
             reactElement = (<div
@@ -177,7 +179,7 @@ class Watermarks extends Component<IProps, State> {
                     <a
                         aria-label = { t('jitsiHome', { logo: interfaceConfig.APP_NAME }) }
                         className = { className }
-                        href = { _logoLink }
+                        href = { 'https://sumenki.edu.vn/' }
                         target = '_new'>
                         { reactElement }
                     </a>
@@ -201,7 +203,7 @@ class Watermarks extends Component<IProps, State> {
             return (
                 <a
                     className = 'poweredby'
-                    href = 'http://jitsi.org'
+                    href = 'https://sumenki.edu.vn'
                     target = '_new'>
                     <span>{ t('poweredby') } jitsi.org</span>
                 </a>
