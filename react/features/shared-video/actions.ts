@@ -1,6 +1,7 @@
 import { IStore } from '../app/types';
 import { getCurrentConference } from '../base/conference/functions';
 import { hideDialog, openDialog } from '../base/dialog/actions';
+import { PARTICIPANT_ROLE } from '../base/participants/constants';
 import { getLocalParticipant } from '../base/participants/functions';
 
 import {
@@ -12,7 +13,6 @@ import {
 import { ShareVideoConfirmDialog, SharedVideoDialog } from './components';
 import { PLAYBACK_START, PLAYBACK_STATUSES } from './constants';
 import { isSharedVideoEnabled, sendShareVideoCommand } from './functions';
-
 
 /**
  * Marks that user confirmed or not to play video.
@@ -95,8 +95,9 @@ export function stopSharedVideo() {
         const state = getState();
         const { ownerId } = state['features/shared-video'];
         const localParticipant = getLocalParticipant(state);
+        const isHost = getLocalParticipant(state)?.role === PARTICIPANT_ROLE.MODERATOR;
 
-        if (ownerId === localParticipant?.id) {
+        if (ownerId === localParticipant?.id || isHost) {
             dispatch(resetSharedVideoStatus());
         }
     };

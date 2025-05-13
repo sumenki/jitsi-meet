@@ -32,6 +32,7 @@ import {
 } from './constants';
 import { isSharedVideoEnabled, isSharingStatus, isURLAllowedForSharedVideo, sendShareVideoCommand } from './functions';
 import logger from './logger';
+import { PARTICIPANT_ROLE } from '../base/participants/constants';
 
 
 /**
@@ -61,8 +62,10 @@ MiddlewareRegistry.register(store => next => action => {
                 const sharedVideoStatus = attributes.state;
 
                 const { ownerId } = state['features/shared-video'];
+                const isFromHost = getParticipantById(state, from)?.role === PARTICIPANT_ROLE.MODERATOR;
 
-                if (ownerId && ownerId !== from) {
+                // logger.debug(`Binh: SHARED_VIDEO ownerId: ${ownerId}, from: ${from}, isFromHost: ${isFromHost}`);
+                if (ownerId && ownerId !== from && !isFromHost) {
                     logger.warn(
                         `User with id: ${from} sent shared video command: ${sharedVideoStatus} while we are playing.`);
 
@@ -193,6 +196,7 @@ MiddlewareRegistry.register(store => next => action => {
     case RESET_SHARED_VIDEO_STATUS: {
         const state = getState();
         const localParticipantId = getLocalParticipant(state)?.id;
+        const isHost = getLocalParticipant(state)?.role === PARTICIPANT_ROLE.MODERATOR;
         const { ownerId: stateOwnerId, videoUrl: statevideoUrl } = state['features/shared-video'];
 
         if (!stateOwnerId) {
@@ -205,7 +209,8 @@ MiddlewareRegistry.register(store => next => action => {
             APP.API.notifyAudioOrVideoSharingToggled(MEDIA_TYPE.VIDEO, 'stop', stateOwnerId);
         }
 
-        if (localParticipantId === stateOwnerId) {
+        // logger.debug(`Binh: RESET_SHARED_VIDEO_STATUS localParticipantId: ${localParticipantId}, stateOwnerId: ${stateOwnerId}`);
+        if (localParticipantId === stateOwnerId || isHost) {
             const conference = getCurrentConference(state);
 
             sendShareVideoCommand({

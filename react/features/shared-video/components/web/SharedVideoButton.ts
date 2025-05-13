@@ -7,6 +7,7 @@ import { getLocalParticipant } from '../../../base/participants/functions';
 import AbstractButton, { IProps as AbstractButtonProps } from '../../../base/toolbox/components/AbstractButton';
 import { toggleSharedVideo } from '../../actions';
 import { isSharingStatus } from '../../functions';
+import { PARTICIPANT_ROLE } from '../../../base/participants/constants';
 
 interface IProps extends AbstractButtonProps {
 
@@ -86,10 +87,11 @@ class SharedVideoButton extends AbstractButton<IProps> {
 function _mapStateToProps(state: IReduxState) {
     const { ownerId, status: sharedVideoStatus } = state['features/shared-video'];
     const localParticipantId = getLocalParticipant(state)?.id;
+    const isHost = getLocalParticipant(state)?.role === PARTICIPANT_ROLE.MODERATOR;
     const isSharing = isSharingStatus(sharedVideoStatus ?? '');
 
     return {
-        _isDisabled: isSharing && ownerId !== localParticipantId,
+        _isDisabled: isSharing && ownerId !== localParticipantId && !isHost,
         _sharingVideo: isSharing
     };
 }
